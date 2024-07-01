@@ -1,5 +1,6 @@
 package org.gfg.JBDL_71_Minor.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.gfg.JBDL_71_Minor.enums.BookType;
 import org.hibernate.annotations.CreationTimestamp;
@@ -29,6 +31,7 @@ import java.util.List;
 @Builder
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString(exclude = {"author", "transactions", "user"})
 public class Book {
 
     @Id
@@ -48,12 +51,15 @@ public class Book {
 
     @ManyToOne
     @JoinColumn //optional author_id
+    @JsonIgnore
     Author author;
 
     @OneToMany(mappedBy = "book")
+    @JsonIgnore
     List<Transaction> transactions;
 
     @ManyToOne
+    @JsonIgnore
     User user;
 
     @CreationTimestamp

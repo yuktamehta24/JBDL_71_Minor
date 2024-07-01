@@ -12,7 +12,7 @@ public class AuthorService {
     AuthorRepository authorRepository;
 
     public Author getAuthorByEmail(String email) {
-        return authorRepository.findByEmail(email);
+        return authorRepository.fetchAuthorByEmailByNativeQuery(email);
     }
 
     public Author addAuthor(Author author) {
