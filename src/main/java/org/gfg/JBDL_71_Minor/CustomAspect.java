@@ -35,5 +35,14 @@ public class CustomAspect {
     }
 
 
+    @Around("@annotation(org.gfg.JBDL_71_Minor.annotations.LogAnnotation)")
+    public Object emitLogsUsingAnnotation(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        log.info("I am around annotation in emit logs before: "+ proceedingJoinPoint.getSignature());
+        Object response = proceedingJoinPoint.proceed();
+//        List<Book> res = (java.util.List<Book>)response;
+        log.info("response annotation : {}", response);
+        log.info("I am around annotation in emit logs after: "+ proceedingJoinPoint.getSignature());
+        return response;
+    }
 
 }

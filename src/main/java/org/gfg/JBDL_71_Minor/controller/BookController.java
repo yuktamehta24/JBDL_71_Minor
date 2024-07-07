@@ -2,6 +2,7 @@ package org.gfg.JBDL_71_Minor.controller;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.gfg.JBDL_71_Minor.annotations.LogAnnotation;
 import org.gfg.JBDL_71_Minor.dto.AddBookRequest;
 import org.gfg.JBDL_71_Minor.enums.BookType;
 import org.gfg.JBDL_71_Minor.model.Book;
@@ -33,11 +34,13 @@ public class BookController {
 //        if (StringUtils.isEmpty(bookRequest.getBookNo())) {
 //            //throwing some exception
 //        }
+
         Book savedBook = bookService.addBook(bookRequest);
         return new ResponseEntity<>(savedBook, HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
+    @LogAnnotation
     public ResponseEntity<List<Book>> getBooks(@RequestParam(value = "title", required = false) String bookTitle,
                                                @RequestParam(value = "type", required = false) BookType bookType) {
         log.info("in book controller");

@@ -1,6 +1,8 @@
 package org.gfg.JBDL_71_Minor.service;
 
 import jakarta.transaction.Transactional;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.gfg.JBDL_71_Minor.dto.TransactionRequest;
 import org.gfg.JBDL_71_Minor.enums.TransactionStatus;
 import org.gfg.JBDL_71_Minor.enums.UserStatus;
@@ -19,6 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TransactionService {
 
     @Autowired
@@ -64,7 +67,7 @@ public class TransactionService {
         return transaction;
     }
 
-    private User fetchUser(TransactionRequest request) throws TransactionException{
+    public User fetchUser(TransactionRequest request) throws TransactionException{
         User user = userService.fetchUserByEmail(request.getUserEmail());
         if(user == null) {
             throw new TransactionException("User does not exist in the library");
@@ -103,6 +106,15 @@ public class TransactionService {
 
     @Transactional
     protected Integer returnBook(Transaction transaction, Book book) {
+
+        int amount = calculateFine(transaction);
+        transactionRepository.save(transaction);
+        book.setUser(null);
+        bookService.updateBookMetadata(book);
+
+        return amount;
+    }
+    public int calculateFine(Transaction transaction) {
         long issueDateInTime = transaction.getCreatedOn().getTime();
         long currenttime = System.currentTimeMillis();
 
@@ -131,11 +143,6 @@ public class TransactionService {
             amount = transaction.getSettlementAmount();
             transaction.setSettlementAmount(0);
         }
-
-        transactionRepository.save(transaction);
-        book.setUser(null);
-        bookService.updateBookMetadata(book);
-
         return amount;
     }
 }
