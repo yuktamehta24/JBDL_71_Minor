@@ -18,6 +18,7 @@ import org.gfg.JBDL_71_Minor.enums.TransactionStatus;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
@@ -26,7 +27,7 @@ import java.util.Date;
 @Builder
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Transaction {
+public class Transaction implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
