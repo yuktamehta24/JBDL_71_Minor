@@ -4,10 +4,13 @@ import jakarta.validation.Valid;
 import org.gfg.JBDL_71_Minor.dto.TransactionRequest;
 import org.gfg.JBDL_71_Minor.exceptions.TransactionException;
 import org.gfg.JBDL_71_Minor.model.Transaction;
+import org.gfg.JBDL_71_Minor.model.User;
 import org.gfg.JBDL_71_Minor.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +33,14 @@ public class TransactionController {
 //            return new ResponseEntity<>(transactionException.getMessage(), HttpStatus.BAD_REQUEST);
 //        }
 //        return new ResponseEntity<>(createdTransaction, HttpStatus.OK);
+
+        //fetch userdetails from security context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        if (!user.getEmail().equals(request.getUserEmail())) {
+            throw new TransactionException("You cannot issue the book to some other user");
+        }
 
         Transaction createdTransaction = transactionService.issueBook(request);
         return new ResponseEntity<>(createdTransaction, HttpStatus.OK);

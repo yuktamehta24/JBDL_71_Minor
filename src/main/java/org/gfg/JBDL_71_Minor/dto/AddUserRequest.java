@@ -20,4 +20,7 @@ public class AddUserRequest {
 
     String address;
 
+    @NotBlank(message = "User password should not be blank")
+    String password;
+
 }

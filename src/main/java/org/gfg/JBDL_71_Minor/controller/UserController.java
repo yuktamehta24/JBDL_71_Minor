@@ -26,7 +26,8 @@ public class UserController {
     }
 
     @PostMapping("/admin")
-    public ResponseEntity<User> addAdmin() {
-        return null;
+    public ResponseEntity<User> addAdmin(@RequestBody @Valid AddUserRequest addUserRequest) {
+        User addedUser = userService.addAdmin(addUserRequest);
+        return new ResponseEntity<>(addedUser, HttpStatus.CREATED);
     }
 }

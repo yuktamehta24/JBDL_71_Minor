@@ -18,10 +18,16 @@ import org.gfg.JBDL_71_Minor.enums.UserStatus;
 import org.gfg.JBDL_71_Minor.enums.UserType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -29,7 +35,7 @@ import java.util.List;
 @Builder
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class User implements Serializable {
+public class User implements Serializable, UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,6 +50,10 @@ public class User implements Serializable {
     @Column(unique = true, length = 15)
 //    @Column(unique = true, nullable = false, length = 15)
     String phoneNo;
+
+    String password;
+
+    String authorities; //ADMIN,STUDENT
 //
 //    String temp;
 //
@@ -72,4 +82,16 @@ public class User implements Serializable {
 
     @UpdateTimestamp
     Date updatedOn;
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Arrays.stream(authorities.split(","))
+                .map(authority -> new SimpleGrantedAuthority(authority))
+                .collect(Collectors.toList());
+    }
 }
